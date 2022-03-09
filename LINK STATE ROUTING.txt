@@ -1,0 +1,93 @@
+set ns [new Simulator] 
+set nf [open out.nam w] 
+$ns namtrace-all $nf 
+set tr [open out.tr w] 
+$ns trace-all $tr proc 
+finish {} { global nf ns 
+tr $ns flush-trace close 
+$tr
+exec namout.nam&
+exit 0 } set n0 
+[$ns node] set 
+n1 [$ns node] 
+set n2 [$ns 
+node] set n3 
+[$ns node] $ns 
+duplex-link $n0 
+$n1 10Mb 10ms 
+DropTail $ns 
+duplex-link $n1 
+$n3 10Mb 10ms 
+DropTail
+$ns duplex-link $n2 $n1 10Mb 10ms DropTail
+$ns duplex-link-op $n0 $n1 orient right-down
+set ns [new Simulator] 
+set nf [open out.nam w] 
+$ns namtrace-all $nf 
+set tr [open out.tr w] 
+$ns trace-all $tr proc 
+finish {} { global nf ns 
+tr $ns flush-trace close 
+$tr
+exec namout.nam&
+exit 0 } set n0 
+[$ns node] set 
+n1 [$ns node] 
+set n2 [$ns 
+node] set n3 
+[$ns node] $ns 
+duplex-link $n0 
+$n1 10Mb 10ms 
+DropTail $ns 
+duplex-link $n1 
+$n3 10Mb 10ms 
+DropTail
+$ns duplex-link $n2 $n1 10Mb 10ms DropTail
+$ns duplex-link-op $n0 $n1 orient right-down
+PROGRAM2:
+#Create a simulator object 
+set ns [new
+Simulator]
+#Define different colors for data flows(for NAM)
+$ns color 1 Blue
+$ns color 2 Red
+#Open the NAM trace file setnf 
+[open out.nam w] 
+$ns namtrace-all $nf 
+#Define a 'finish' procedure 
+proc finish {
+} { global ns 
+nf
+$ns flush-trace #close the NAM 
+trace file
+close $nf
+#Execute NAM on the trace file 
+exec namout.nam&
+exit 0
+} for {set i 0} {$i < 5} 
+{incr i 1} 
+{ set n($i) [$ns node]} for {set i 
+0} {$i < 4} {incr i} {
+$ns duplex-link $n($i) $n([expr $i+1]) 1Mb 10ms DropTail} 
+$ns duplex-link $n(0) $n(1) 1Mb 10msDropTail $ns duplexlink 
+$n(1) $n(2) 1Mb 10msDropTail $ns duplex-link
+$n(2) $n(3) 1Mb 10msDropTail $ns duplex-link $n(3) $n(4)
+1Mb 10msDropTail $ns duplex-link $n(4) $n(1) 1Mb
+10msDropTail set udp0 [new Agent/UDP]
+$ns attach-agent $n(0) $udp0 set cbr0 [new 
+Application/Traffic/CBR]
+$cbr0 set packetSize_ 500
+$cbr0 set interval_ 0.005
+$cbr0 attach-agent
+$udp0 set null0 [new
+Agent/Null]
+$ns attach-agent $n(3) $null0
+$ns connect $udp0 $null0
+$ns rtproto DV
+$ns rtmodel-at 15.0 down $n(1) $n(2)
+$ns rtmodel-at 25.0 up $n(1) $n(2)
+$ns color 1 Green
+$ns at 1.0 "$cbr0 start"
+$ns at 35 "finish" 
+#Run the simulation
+$ns run
